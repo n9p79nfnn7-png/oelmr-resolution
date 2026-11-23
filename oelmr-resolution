@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>OELMR-Resolution</title>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #141e30;
+      --panel2: #1b2940;
+      --border: #33425a;
+      --text: #f4f6fc;
+      --muted: #a3afc3;
+      --gold: #e8c46a;
+      --blue: #8ba7ff;
+      --green: #70d6b0;
+      --red: #ff8d9a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 90% 0%, #1b2a47 0%, transparent 40%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    button, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      max-width: 1100px;
+      margin: auto;
+      padding: 18px 22px;
+      border-bottom: 1px solid #ffffff12;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 12px #8c8dff44);
+    }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .creator {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 4px;
+    }
+
+    .version {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--gold);
+      padding: 7px 11px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    main {
+      width: min(100%, 1000px);
+      margin: auto;
+      padding: 28px 20px 60px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #19263d, #111b2c);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(30px, 6vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 18px 0 12px;
+    }
+
+    h1 span { color: var(--gold); }
+
+    .hero p {
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 620px;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #172338, #111a2a);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      margin: 0 0 7px;
+      font-size: 18px;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 14px 0 8px;
+    }
+
+    textarea, select {
+      width: 100%;
+      color: var(--text);
+      background: #0b1321;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    textarea:focus, select:focus {
+      border-color: var(--blue);
+    }
+
+    select { cursor: pointer; }
+
+    .counter {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 8px;
+      gap: 12px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 13px 15px;
+      background: #1c2a40;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 750;
+      transition: .2s;
+    }
+
+    .btn:hover { filter: brightness(1.15); }
+    .btn:active { transform: scale(.99); }
+
+    .btn.gold {
+      background: linear-gradient(110deg, #f0d58b, #d9ae4f);
+      color: #172033;
+      border-color: transparent;
+    }
+
+    .btn.blue {
+      background: #263d65;
+      border-color: #46659b;
+    }
+
+    .btn.full { grid-column: 1 / -1; }
+
+    .result { display: none; }
+    .result.show { display: block; }
+
+    .scorebox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #0c1524;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .score {
+      color: var(--gold);
+      font-size: 34px;
+      font-weight: 850;
+    }
+
+    .meter {
+      height: 8px;
+      background: #28364b;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #7e9cff, #e7c46b);
+      transition: width .3s;
+    }
+
+    .report-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0;
+    }
+
+    .report-list li {
+      display: flex;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ffffff12;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .report-list li::before {
+      content: "•";
+      color: var(--gold);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.8;
+      background: #0b1321;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 14px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .compare .output {
+      min-height: 120px;
+      font-size: 13px;
+    }
+
+    .mini-title {
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin: 0 0 9px;
+    }
+
+    .notice {
+      border: 1px solid #8b754033;
+      background: #e8c46a0a;
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 20px 0;
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 18px 13px 40px; }
+      .topbar { padding: 14px; }
+      .hero { padding: 23px 20px; }
+      .card { padding: 17px; }
+      .compare { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+      .btn.full { grid-column: auto; }
+      .version { font-size: 9px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 100 100" role="img"
+           aria-label="Logo abstrait OELMR">
+        <defs>
+          <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#ff4ba5"/>
+            <stop offset="1" stop-color="#7d54ff"/>
+          </linearGradient>
+          <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#fff2a4"/>
+            <stop offset="1" stop-color="#e4a72d"/>
+          </linearGradient>
+          <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#64eaff"/>
+            <stop offset="1" stop-color="#554bff"/>
+          </linearGradient>
+          <linearGradient id="coral" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#ff9a80"/>
+            <stop offset="1" stop-color="#f03f83"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 61 C-1 35 28 18 47 40 C60 55 68 79 85 74
+                 C99 70 93 46 77 39 C60 31 54 18 67 8
+                 C85 -2 101 20 93 40 C84 65 55 95 34 89
+                 C17 84 20 70 12 61Z"
+              fill="url(#blue)" opacity=".95"/>
+        <path d="M11 61 C-1 35 28 18 47 40 C60 55 68 79 85 74
+                 C99 70 93 46 77 39 C60 31 54 18 67 8
+                 C85 -2 101 20 93 40 C84 65 55 95 34 89
+                 C17 84 20 70 12 61Z"
+              fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2"/>
+        <path d="M14 53 C25 32 44 48 53 62 C65 81 83 81 91 63
+                 C99 45 77 34 69 24 C60 12 70 1 82 5
+                 C99 11 96 32 85 49 C72 69 55 90 39 85
+                 C23 81 25 62 14 53Z"
+              fill="url(#pink)"/>
+        <path d="M40 78 C35 60 45 34 59 16 C69 3 85 8 83 23
+                 C81 36 65 46 60 59 C56 70 62 82 72 85
+                 C56 96 42 91 40 78Z"
+              fill="url(#gold)"/>
+        <path d="M31 72 C16 63 21 45 36 42 C49 39 56 54 61 66
+                 C66 79 78 82 88 70 C84 91 64 99 50 84
+                 C42 76 39 78 31 72Z"
+              fill="url(#coral)"/>
+        <path d="M31 72 C16 63 21 45 36 42 C49 39 56 54 61 66"
+              fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+      </svg>
+
+      <div>
+        <div class="brand-name">OELMR-RESOLUTION</div>
+        <div class="creator">CRÉÉ PAR OELMR</div>
+      </div>
+    </div>
+
+    <div class="version">VERSION 1.0</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Analyse de texte</div>
+      <h1>OELMR <span>Resolution</span></h1>
+      <p>
+        Scanner les caractéristiques d'un texte, comprendre les résultats
+        et améliorer sa rédaction avec une reformulation claire et fidèle.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Espace de travail</h2>
+      <p class="subtext">
+        Colle ton texte, puis choisis l'opération à effectuer.
+      </p>
+
+      <label for="source">Texte à analyser ou à reformuler</label>
+      <textarea id="source"
+        placeholder="Colle ton texte ici..."></textarea>
+
+      <div class="counter">
+        <span id="wordCount">0 mot</span>
+        <span id="charCount">0 caractère</span>
+      </div>
+
+      <label for="tone">Style de reformulation</label>
+      <select id="tone">
+        <option value="natural">Naturel et clair</option>
+        <option value="school">Scolaire et structuré</option>
+        <option value="professional">Professionnel</option>
+        <option value="simple">Simple et accessible</option>
+      </select>
+
+      <div class="actions">
+        <button class="btn gold" id="scanBtn">Scanner le texte</button>
+        <button class="btn blue" id="rewriteBtn">Humaniser le texte</button>
+        <button class="btn gold full" id="bothBtn">
+          Scanner + Humaniser
+        </button>
+        <button class="btn full" id="clearBtn">Effacer</button>
+      </div>
+    </section>
+
+    <section class="card result" id="scanResult">
+      <div class="eyebrow">Rapport d'analyse</div>
+      <h2 class="section-title">Résultats du scanner</h2>
+      <p class="subtext">
+        Les indicateurs décrivent des caractéristiques observées.
+        Ils ne prouvent pas l'origine d'un texte.
+      </p>
+
+      <div class="scorebox">
+        <div>
+          <div class="mini-title">INDICE DE STYLE AUTOMATISÉ</div>
+          <div id="verdict">Analyse terminée</div>
+          <div class="meter">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
+        </div>
+        <div class="score" id="score">0</div>
+      </div>
+
+      <ul class="report-list" id="report"></ul>
+
+      <div class="notice">
+        Le score est un indicateur heuristique, pas une probabilité fiable
+        qu'un texte ait été écrit par une IA. Un texte humain peut présenter
+        les mêmes caractéristiques.
+      </div>
+    </section>
+
+    <section class="card result" id="rewriteResult">
+      <div class="eyebrow">Humanisation</div>
+      <h2 class="section-title">Texte reformulé</h2>
+      <p class="subtext">
+        Vérifie que la reformulation conserve exactement tes idées et tes faits.
+      </p>
+
+      <div class="output" id="rewritten"></div>
+
+      <div class="actions">
+        <button class="btn gold" id="copyBtn">Copier le résultat</button>
+        <button class="btn" id="replaceBtn">Remplacer le texte original</button>
+      </div>
+      <p class="subtext" id="copyStatus" aria-live="polite"></p>
+    </section>
+
+    <section class="card result" id="compareResult">
+      <h2 class="section-title">Comparaison avant / après</h2>
+      <div class="compare">
+        <div>
+          <div class="mini-title">TEXTE ORIGINAL</div>
+          <div class="output" id="before"></div>
+        </div>
+        <div>
+          <div class="mini-title">TEXTE REFORMULÉ</div>
+          <div class="output" id="after"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">OELMR-Resolution · Créé par OELMR</footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const $ = id => document.getElementById(id);
+
+    const source = $("source");
+    let lastRewrite = "";
+
+    const expressions = [
+      "en conclusion",
+      "de plus",
+      "en outre",
+      "il est important de noter",
+      "dans le cadre de",
+      "il convient de",
+      "par ailleurs",
+      "en effet",
+      "il est essentiel",
+      "cela permet de",
+      "de manière significative",
+      "mettre en lumière",
+      "optimiser",
+      "explorer",
+      "crucial"
+    ];
+
+    function words(text) {
+      return text.match(/\b[\p{L}\p{N}]+\b/gu) || [];
+    }
+
+    function updateCount() {
+      const count = words(source.value).length;
+      $("wordCount").textContent =
+        count + (count > 1 ? " mots" : " mot");
+      $("charCount").textContent =
+        source.value.length + " caractère(s)";
+    }
+
+    source.addEventListener("input", updateCount);
+
+    function show(id) {
+      $(id).classList.add("show");
+    }
+
+    function hideResults() {
+      ["scanResult", "rewriteResult", "compareResult"]
+        .forEach(id => $(id).classList.remove("show"));
+    }
+
+    function validateText() {
+      const text = source.value.trim();
+
+      if (!text) {
+        alert("Colle d'abord un texte dans la zone de saisie.");
+        return null;
+      }
+
+      return text;
+    }
+
+    function scan(text) {
+      const tokens = words(text.toLowerCase());
+      const details = [];
+      let score = 0;
+
+      if (tokens.length < 20) {
+        return {
+          score: null,
+          verdict: "Texte trop court",
+          details: [
+            "Le texte contient moins de 20 mots. Les indicateurs sont trop limités pour produire un score."
+          ]
+        };
+      }
+
+      const lower = text.toLowerCase();
+      let expressionCount = 0;
+
+      for (const expression of expressions) {
+        const escaped = expression.replace(
+          /[.*+?^${}()|[\]\\]/g, "\\$&"
+        );
+
+        const found = lower.match(
+          new RegExp("\\b" + escaped + "\\b", "g")
+        );
+
+        expressionCount += found ? found.length : 0;
+      }
+
+      if (expressionCount > 0) {
+        score += Math.min(30, expressionCount * 10);
+        details.push(
+          expressionCount +
+          " occurrence(s) d'expressions de la liste de repérage."
+        );
+      } else {
+        details.push("Aucune expression de la liste de repérage trouvée.");
+      }
+
+      const sentences = text
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      if (sentences.length >= 4) {
+        const lengths = sentences.map(s => words(s).length);
+        const mean = lengths.reduce((a, b) => a + b, 0) / lengths.length;
+        const variance = lengths.reduce(
+          (sum, n) => sum + Math.pow(n - mean, 2), 0
+        ) / lengths.length;
+
+        const deviation = Math.sqrt(variance);
+
+        if (deviation < 4) {
+          score += 20;
+          details.push(
+            "Les phrases ont des longueurs relativement uniformes."
+          );
+        } else {
+          details.push(
+            "Les longueurs de phrases présentent une certaine variation."
+          );
+        }
+      } else {
+        details.push(
+          "Le nombre de phrases est insuffisant pour évaluer leur régularité."
+        );
+      }
+
+      const diversity = new Set(tokens).size / tokens.length;
+
+      if (diversity < 0.45) {
+        score += 20;
+        details.push(
+          "La diversité lexicale est relativement faible."
+        );
+      } else {
+        details.push(
+          "La diversité lexicale est supérieure au seuil de repérage."
+        );
+      }
+
+      const contractions = ["c'est", "j'ai", "t'", "n'est", "qu'il"];
+      const hasContraction = contractions.some(c => lower.includes(c));
+
+      if (!hasContraction) {
+        score += 15;
+        details.push(
+          "Peu de contractions courantes ont été repérées."
+        );
+      } else {
+        details.push(
+          "Des contractions courantes sont présentes."
+        );
+      }
+
+      const repeated = tokens.length - new Set(tokens).size;
+      const repetitionRate = repeated / tokens.length;
+
+      if (repetitionRate > 0.55) {
+        score += 15;
+        details.push(
+          "Le texte contient un taux élevé de répétition des mots."
+        );
+      } else {
+        details.push(
+          "Le taux de répétition des mots reste sous le seuil choisi."
+        );
+      }
+
+      score = Math.min(100, score);
+
+      let verdict = "Peu de signaux repérés";
+
+      if (score >= 60) {
+        verdict = "Plusieurs signaux repérés";
+      } else if (score >= 35) {
+        verdict = "Signaux mixtes";
+      }
+
+      return { score, verdict, details };
+    }
+
+    function renderScan(result) {
+      show("scanResult");
+
+      $("score").textContent =
+        result.score === null ? "—" : result.score + "%";
+
+      $("verdict").textContent = result.verdict;
+
+      $("meterFill").style.width =
+        result.score === null ? "0%" : result.score + "%";
+
+      $("report").replaceChildren();
+
+      result.details.forEach(detail => {
+        const li = document.createElement("li");
+        li.textContent = detail;
+        $("report").appendChild(li);
+      });
+    }
+
+    const replacements = [
+      [/\ben conclusion\b/gi, "pour finir"],
+      [/\bde plus\b/gi, "aussi"],
+      [/\ben outre\b/gi, "également"],
+      [/\bil est important de noter que\b/gi, "il faut retenir que"],
+      [/\bil est important de noter\b/gi, "il faut retenir"],
+      [/\bdans le cadre de\b/gi, "dans"],
+      [/\bil convient de\b/gi, "il est préférable de"],
+      [/\bpar ailleurs\b/gi, "également"],
+      [/\ben effet\b/gi, "car"],
+      [/\bde manière significative\b/gi, "de façon notable"],
+      [/\bcela permet de\b/gi, "cela aide à"],
+      [/\bmettre en lumière\b/gi, "montrer"],
+      [/\boptimiser\b/gi, "améliorer"],
+      [/\bcrucial\b/gi, "essentiel"],
+      [/\bexplorer\b/gi, "examiner"]
+    ];
+
+    function humanize(text, tone) {
+      let result = text;
+
+      for (const [pattern, replacement] of replacements) {
+        result = result.replace(pattern, replacement);
+      }
+
+      result = result
+        .replace(/[ \t]{2,}/g, " ")
+        .replace(/ *([,;:!?]) */g, "$1 ")
+        .replace(/ +\./g, ".")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+
+      if (tone === "simple") {
+        result = result
+          .replace(/\bnéanmoins\b/gi, "mais")
+          .replace(/\bcependant\b/gi, "mais")
+          .replace(/\bpar conséquent\b/gi, "donc");
+      }
+
+      if (tone === "professional") {
+        result = result
+          .replace(/\bça\b/gi, "cela")
+          .replace(/\btrès important\b/gi, "essentiel");
+      }
+
+      if (tone === "school") {
+        result = result
+          .replace(/\bça\b/gi, "cela")
+          .replace(/\bplein de\b/gi, "de nombreux");
+      }
+
+      return result;
+    }
+
+    function renderRewrite(original, rewritten) {
+      lastRewrite = rewritten;
+
+      $("rewritten").textContent = rewritten;
+      $("before").textContent = original;
+      $("after").textContent = rewritten;
+
+      show("rewriteResult");
+      show("compareResult");
+      $("copyStatus").textContent = "";
+    }
+
+    function selectedTone() {
+      return $("tone").value;
+    }
+
+    $("scanBtn").addEventListener("click", () => {
+      const text = validateText();
+      if (text === null) return;
+
+      renderScan(scan(text));
+    });
+
+    $("rewriteBtn").addEventListener("click", () => {
+      const text = validateText();
+      if (text === null) return;
+
+      renderRewrite(text, humanize(text, selectedTone()));
+    });
+
+$("bothBtn").addEventListener("click", () => {
+  const text = validateText();
+  if (text === null) return;
+
+  const texteHumanise = humanize(text, selectedTone());
+
+  // Analyse du texte original
+  renderScan(scan(text));
+
+  // Affichage du texte humanisé
+  renderRewrite(text, texteHumanise);
+
+  // Analyse du texte après humanisation
+  renderScan(scan(texteHumanise));
+});
+
+    $("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(lastRewrite);
+        $("copyStatus").textContent = "Texte copié.";
+      } catch {
+        $("copyStatus").textContent =
+          "Copie automatique indisponible. Sélectionne le texte pour le copier.";
+      }
+    });
+
+    $("replaceBtn").addEventListener("click", () => {
+      if (!lastRewrite) return;
+
+      source.value = lastRewrite;
+      updateCount();
+      hideResults();
+      source.focus();
+    });
+
+    updateCount();
+  </script>
+</body>
+</html>
