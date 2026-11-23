@@ -1,4 +1,10 @@
-wrangler.jsonc
-src
-.assetsignore
-README.md
+{
+  "name": "oelmr-resolution00",
+  "main": "src/index.js",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  }
+}
